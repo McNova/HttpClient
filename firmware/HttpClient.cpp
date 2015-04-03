@@ -6,9 +6,9 @@ static const uint16_t TIMEOUT = 5000; // Allow maximum 5s between data packets.
 /**
 * Constructor.
 */
-HttpClient::HttpClient()
+HttpClient::HttpClient(char* buffer)
 {
-
+    this->buffer = buffer;
 }
 
 /**
@@ -159,7 +159,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     #endif
 
     // clear response buffer
-    memset(&buffer[0], 0, sizeof(buffer));
+    memset(&buffer[0], 0, sizeof(*buffer));
 
 
     //
@@ -206,9 +206,9 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
             }
 
             // Check that received character fits in buffer before storing.
-            if (bufferPosition < sizeof(buffer)-1) {
+            if (bufferPosition < sizeof(*buffer)-1) {
                 buffer[bufferPosition] = c;
-            } else if ((bufferPosition == sizeof(buffer)-1)) {
+            } else if ((bufferPosition == sizeof(*buffer)-1)) {
                 buffer[bufferPosition] = '\0'; // Null-terminate buffer
                 client.stop();
                 error = true;
