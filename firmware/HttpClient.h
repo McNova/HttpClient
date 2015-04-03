@@ -60,11 +60,12 @@ public:
     */
     TCPClient client;
     char* buffer;
-
+    int buflen;
+    
     /**
     * Constructor.
     */
-    HttpClient(char* buffer);
+    HttpClient(char* buffer, int buflen);
 
     /**
     * HTTP request methods.
