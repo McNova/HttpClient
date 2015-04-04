@@ -215,7 +215,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 error = true;
 
                 #ifdef LOGGING
-                Serial.println("HttpClient>\tError: Response body larger than buffer.");
+                Serial.println("\r\nHttpClient>\tError: Response body larger than buffer.");
                 #endif
             }
             bufferPosition++;
