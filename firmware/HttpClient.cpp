@@ -2,7 +2,7 @@
 #include "application.h"
 
 //#define LOGGING
-static const uint16_t TIMEOUT = 5000; // Allow maximum 5s between data packets.
+static const uint16_t TIMEOUT = 4000; // Allow maximum 4s between data packets.
 
 /**
 * Constructor.
@@ -156,7 +156,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         Serial.println(aRequest.body);
         #endif
     }
-    SPARK_WLAN_Loop();
+    Spark.process();
     
     #ifdef LOGGING
     Serial.println("HttpClient>\tEnd of HTTP Request.");
@@ -164,8 +164,8 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
 
     // clear response buffer
     memset(buffer, 0, buflen);
-    //aResponse.body = buffer;
-    //aResponse.length = 0;
+    aResponse.body = buffer;
+    aResponse.length = 0;
 
     //
     // Receive HTTP Response
@@ -223,7 +223,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 #endif
             }
             bufferPosition++;
-            SPARK_WLAN_Loop();
+            Spark.process();
         }
         buffer[bufferPosition] = '\0'; // Null-terminate buffer
 
@@ -241,7 +241,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         if (!error && !timeout) {
             delay(200);
         }
-        SPARK_WLAN_Loop();
+        Spark.process();
     } while (client.connected() && !timeout && !error);
 
     #ifdef LOGGING
