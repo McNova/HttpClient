@@ -247,6 +247,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     Serial.println("ms).");
     #endif
     client.stop();
+    char* pch = strstr(buffer, "\r\n\r\n");
     // Not super elegant way of finding the status code, but it works.
     buffer[12] = 0;
     aResponse.status = atoi(&buffer[9]);
@@ -254,7 +255,6 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     Serial.print("HttpClient>\tStatus Code: ");
     Serial.println(aResponse.status);
     #endif
-    char* pch = strstr(buffer, "\r\n\r\n");
     if (pch == NULL) {
         #ifdef LOGGING
         Serial.println("HttpClient>\tError: Can't find HTTP response body.");
