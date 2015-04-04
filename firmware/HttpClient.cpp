@@ -2,7 +2,7 @@
 #include "application.h"
 
 //#define LOGGING
-static const uint16_t TIMEOUT = 4000; // Allow maximum 4s between data packets.
+static const uint16_t TIMEOUT = 3000; // Allow maximum 3s between data packets.
 
 /**
 * Constructor.
@@ -64,15 +64,14 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     // NOTE: The default port tertiary statement is unpredictable if the request structure is not initialised
     // http_request_t request = {0} or memset(&request, 0, sizeof(http_request_t)) should be used
     // to ensure all fields are zero
-    bool connected = false;
     if(aRequest.hostname!=NULL) {
-        connected = client.connect(aRequest.hostname.c_str(), (aRequest.port) ? aRequest.port : 80 );
+        client.connect(aRequest.hostname.c_str(), (aRequest.port) ? aRequest.port : 80 );
     }   else {
-        connected = client.connect(aRequest.ip, aRequest.port);
+        client.connect(aRequest.ip, aRequest.port);
     }
 
     #ifdef LOGGING
-    if (connected) {
+    if (client.connected) {
         if(aRequest.hostname!=NULL) {
             Serial.print("HttpClient>\tConnecting to: ");
             Serial.print(aRequest.hostname);
@@ -87,7 +86,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     }
     #endif
 
-    if (!connected) {
+    if (!client.connected) {
         client.stop();
         // If TCP Client can't connect to host, exit here.
         return;
@@ -182,6 +181,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     unsigned long firstRead = millis();
     bool error = false;
     bool timeout = false;
+    char* header;
 
     do {
         #ifdef LOGGING
@@ -222,7 +222,16 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 Serial.println("\r\nHttpClient>\tError: Response body larger than buffer.");
                 #endif
             }
+            
             bufferPosition++;
+            
+            if (c == 10) {
+                if (strncmp(header, "Content-Length: ", 16) == 0) {
+                    aResponse.length = atoi(&header[17]); 
+                }
+                header = &buffer[bufferPosition];
+            }
+
             Spark.process();
         }
         buffer[bufferPosition] = '\0'; // Null-terminate buffer
@@ -268,5 +277,6 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         return;
     }
     aResponse.body = pch + 4;
-    aResponse.length = strlen(aResponse.body);
+    if (aResponse.length == 0)
+        aResponse.length = strlen(aResponse.body);
 }
