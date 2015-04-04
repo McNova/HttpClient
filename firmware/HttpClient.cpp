@@ -149,12 +149,14 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
 
     if (aRequest.body != NULL) {
         client.println(aRequest.body);
+        client.flush();
 
         #ifdef LOGGING
         Serial.println(aRequest.body);
         #endif
     }
-
+    SPARK_WLAN_Loop();
+    
     #ifdef LOGGING
     Serial.println("HttpClient>\tEnd of HTTP Request.");
     #endif
@@ -220,6 +222,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 #endif
             }
             bufferPosition++;
+            SPARK_WLAN_Loop();
         }
         buffer[bufferPosition] = '\0'; // Null-terminate buffer
 
@@ -237,6 +240,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         if (!error && !timeout) {
             delay(200);
         }
+        SPARK_WLAN_Loop();
     } while (client.connected() && !timeout && !error);
 
     #ifdef LOGGING
