@@ -51,6 +51,7 @@ typedef struct
 {
   int status;
   char* body;
+  int length;
 } http_response_t;
 
 class HttpClient {
