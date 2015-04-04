@@ -246,27 +246,19 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     Serial.println("ms).");
     #endif
     client.stop();
-
-    String raw_response(buffer);
-
     // Not super elegant way of finding the status code, but it works.
-    String statusCode = raw_response.substring(9,12);
-
+    buffer[12] = 0;
+    aResponse.status = atoi(&buffer[9]);
     #ifdef LOGGING
     Serial.print("HttpClient>\tStatus Code: ");
-    Serial.println(statusCode);
+    Serial.println(aResponse.status);
     #endif
-
-    int bodyPos = raw_response.indexOf("\r\n\r\n");
-    if (bodyPos == -1) {
+    char* pch = strstr(buffer, "\r\n\r\n");
+    if (pch == NULL) {
         #ifdef LOGGING
         Serial.println("HttpClient>\tError: Can't find HTTP response body.");
         #endif
-
         return;
     }
-    // Return the entire message body from bodyPos+4 till end.
-    aResponse.body = "";
-    aResponse.body += raw_response.substring(bodyPos+4);
-    aResponse.status = atoi(statusCode.c_str());
+    aResponse.body = pch + 4;
 }
