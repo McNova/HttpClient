@@ -161,8 +161,8 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
 
     // clear response buffer
     memset(buffer, 0, buflen);
-    aResponse.body = buffer;
-    aResponse.length = 0;
+    //aResponse.body = buffer;
+    //aResponse.length = 0;
 
     //
     // Receive HTTP Response
