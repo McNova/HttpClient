@@ -60,13 +60,12 @@ public:
     * Public references to variables.
     */
     TCPClient client;
-    char* buffer;
-    int buflen;
+    char[] buffer;
     
     /**
     * Constructor.
     */
-    HttpClient(char* buffer, int buflen);
+    HttpClient(char[] buffer);
 
     /**
     * HTTP request methods.
