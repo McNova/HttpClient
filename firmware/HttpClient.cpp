@@ -1,15 +1,14 @@
 #include "HttpClient.h"
 
-#define LOGGING
 static const uint16_t TIMEOUT = 5000; // Allow maximum 5s between data packets.
 
 /**
 * Constructor.
 */
-HttpClient::HttpClient(char buffer[])
+HttpClient::HttpClient(char* buffer, int buflen)
 {
     this->buffer = buffer;
-    buflen = sizeof(buffer);
+    this->buflen = buflen;
 }
 
 /**
