@@ -261,4 +261,5 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         return;
     }
     aResponse.body = pch + 4;
+    aResponse.length = strlen(aResponse.body);
 }
