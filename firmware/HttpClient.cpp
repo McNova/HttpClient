@@ -5,7 +5,7 @@ static const uint16_t TIMEOUT = 5000; // Allow maximum 5s between data packets.
 /**
 * Constructor.
 */
-HttpClient::HttpClient(char[] buffer)
+HttpClient::HttpClient(char buffer[])
 {
     this->buffer = buffer;
     buflen = sizeof(buffer);
