@@ -65,7 +65,7 @@ public:
     /**
     * Constructor.
     */
-    HttpClient(char[] buffer);
+    HttpClient(char buffer[]);
 
     /**
     * HTTP request methods.
