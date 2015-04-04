@@ -50,7 +50,7 @@ typedef struct
 typedef struct
 {
   int status;
-  String body;
+  char* body;
 } http_response_t;
 
 class HttpClient {
