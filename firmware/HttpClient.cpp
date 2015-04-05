@@ -232,17 +232,22 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 }
                 header = &buffer[bufferPosition];
             }
-
-            if ((&buffer[bufferPosition] - strstr(buffer, "\r\n\r\n")) - 4 == aResponse.length)
+            
+            aResponse.body = strstr(buffer, "\r\n\r\n");
+            if (aResponse.body != NULL)
             {
-                buffer[bufferPosition] = '\0';
-                Serial.println(buffer);
-                client.stop();
+                aResponse.body += 4;
+                if (strlen(aResponse.body) == aResponse.length)
+                {
+                    client.stop();
+                }
             }
 
             Spark.process();
         }
         buffer[bufferPosition] = '\0'; // Null-terminate buffer
+        aResponse.length = strlen(aResponse.body);
+        Serial.println(aResponse.body);
 
         #ifdef LOGGING
         if (bytes) {
@@ -270,7 +275,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     Serial.println("ms).");
     #endif
     client.stop();
-    char* pch = strstr(buffer, "\r\n\r\n");
+    
     // Not super elegant way of finding the status code, but it works.
     buffer[12] = 0;
     aResponse.status = atoi(&buffer[9]);
@@ -278,12 +283,10 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     Serial.print("HttpClient>\tStatus Code: ");
     Serial.println(aResponse.status);
     #endif
-    if (pch == NULL) {
+    if (aResponse.body == NULL) {
         #ifdef LOGGING
         Serial.println("HttpClient>\tError: Can't find HTTP response body.");
         #endif
         return;
     }
-    aResponse.body = pch + 4;
-    aResponse.length = strlen(aResponse.body);
 }
