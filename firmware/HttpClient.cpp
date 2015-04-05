@@ -228,8 +228,17 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
             if (c == 10) {
                 if (strncmp(header, "Content-Length: ", 16) == 0) {
                     aResponse.length = atoi(&header[17]);
+                    Serial.println(aResponse.length);
                 }
                 header = &buffer[bufferPosition];
+                Serial.println(header);
+            }
+
+            if (bufferPosition == aResponse.length)
+            {
+                buffer[bufferPosition] = '\0';
+                Serial.println(buffer);
+                client.stop();
             }
 
             Spark.process();
@@ -277,6 +286,5 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         return;
     }
     aResponse.body = pch + 4;
-    if (aResponse.length == 0)
-        aResponse.length = strlen(aResponse.body);
+    aResponse.length = strlen(aResponse.body);
 }
