@@ -227,11 +227,10 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
 
             if (c == 10) {
                 if (strncmp(header, "Content-Length: ", 16) == 0) {
-                    aResponse.length = atoi(&header[17]);
+                    aResponse.length = atoi(&header[16]);
                     Serial.println(aResponse.length);
                 }
                 header = &buffer[bufferPosition];
-                Serial.println(header);
             }
 
             if (bufferPosition == aResponse.length)
