@@ -183,14 +183,14 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     char* header;
 
     do {
-        //#ifdef LOGGING
+        #ifdef LOGGING
         int bytes = client.available();
         if(bytes) {
             Serial.print("\r\nHttpClient>\tReceiving TCP transaction of ");
             Serial.print(bytes);
             Serial.println(" bytes.");
         }
-        //#endif
+        #endif
 
         while (client.available() && !timeout && !error) {
             char c = client.read();
@@ -218,9 +218,9 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 client.stop();
                 error = true;
 
-                //#ifdef LOGGING
+                #ifdef LOGGING
                 Serial.println("\r\nHttpClient>\tError: Response body larger than buffer.");
-                //#endif
+                #endif
             }
 
             bufferPosition++;
@@ -228,7 +228,6 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
             if (c == 10) {
                 if (strncmp(header, "Content-Length: ", 16) == 0) {
                     aResponse.length = atoi(&header[16]);
-                    Serial.println(aResponse.length);
                 }
                 header = &buffer[bufferPosition];
             }
@@ -237,22 +236,19 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
             if (aResponse.body != NULL)
             {
                 aResponse.body += 4;
-                Serial.println(strlen(aResponse.body));
-                Serial.println(aResponse.length);
                 if (strlen(aResponse.body) == aResponse.length)
                 {
-                    Serial.println("stop");
                     client.stop();
                 }
             }
         }
         buffer[bufferPosition] = '\0'; // Null-terminate buffer
 
-        //#ifdef LOGGING
+        #ifdef LOGGING
         if (bytes) {
             Serial.println("\r\nHttpClient>\tEnd of TCP transaction.");
         }
-        //#endif
+        #endif
 
         // Check that there hasn't been more than 3s since last read.
         timeout = millis() - lastRead > TIMEOUT;
@@ -260,8 +256,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         // Unless there has been an error or timeout wait 200ms to allow server
         // to respond or close connection.
         if (!error && !timeout) {
-            //delay(200);
-            Serial.print("process");
+            delay(10);
             Spark.process();
         }
     } while (client.connected() && !timeout && !error);
@@ -279,10 +274,10 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     // Not super elegant way of finding the status code, but it works.
     buffer[12] = 0;
     aResponse.status = atoi(&buffer[9]);
-    //#ifdef LOGGING
+    #ifdef LOGGING
     Serial.println(aResponse.status);
     Serial.println(aResponse.body);
-    //#endif
+    #endif
     if (aResponse.body == NULL) {
         #ifdef LOGGING
         Serial.println("HttpClient>\tError: Can't find HTTP response body.");
