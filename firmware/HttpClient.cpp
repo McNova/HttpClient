@@ -164,7 +164,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     // clear response buffer
     memset(buffer, 0, buflen);
     aResponse.body = buffer;
-    aResponse.length = 0;
+    aResponse.length = -1;
 
     //
     // Receive HTTP Response
@@ -261,9 +261,9 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         // Unless there has been an error or timeout wait 200ms to allow server
         // to respond or close connection.
         if (!error && !timeout) {
-            delay(200);
+            //delay(200);
+            Spark.process();
         }
-        Spark.process();
     } while (client.connected() && !timeout && !error);
     
     #ifdef LOGGING
