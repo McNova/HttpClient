@@ -192,7 +192,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         }
         #endif
 
-        while (client.available() && !timeout && !error) {
+        while (client.available()) {
             char c = client.read();
             #ifdef LOGGING
             Serial.print(c);
@@ -212,7 +212,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
 
             // Check that received character fits in buffer before storing.
             if (bufferPosition < buflen-1) {
-                buffer[bufferPosition] = c;
+                buffer[bufferPosition++] = c;
             } else if ((bufferPosition == buflen-1)) {
                 buffer[bufferPosition] = '\0'; // Null-terminate buffer
                 client.stop();
@@ -221,9 +221,11 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 #ifdef LOGGING
                 Serial.println("\r\nHttpClient>\tError: Response body larger than buffer.");
                 #endif
+                
+                break;
             }
 
-            bufferPosition++;
+            buffer[bufferPosition] = '\0';
 
             if (c == 10) {
                 if (strncmp(header, "Content-Length: ", 16) == 0) {
@@ -242,7 +244,6 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 }
             }
         }
-        buffer[bufferPosition] = '\0'; // Null-terminate buffer
 
         #ifdef LOGGING
         if (bytes) {
@@ -256,7 +257,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         // Unless there has been an error or timeout wait 200ms to allow server
         // to respond or close connection.
         if (!error && !timeout) {
-            delay(10);
+            //delay(200);
             Spark.process();
         }
     } while (client.connected() && !timeout && !error);
