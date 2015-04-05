@@ -110,7 +110,7 @@ public:
     {
         request(aRequest, aResponse, headers, HTTP_METHOD_DELETE);
     }
-	
+
     void patch(http_request_t &aRequest, http_response_t &aResponse, http_header_t headers[])
     {
         request(aRequest, aResponse, headers, HTTP_METHOD_PATCH);
