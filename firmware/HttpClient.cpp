@@ -86,7 +86,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     }
     #endif
 
-    if (!client.connected) {
+    if (!client.connected()) {
         client.stop();
         // If TCP Client can't connect to host, exit here.
         return;
@@ -156,7 +156,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         #endif
     }
     Spark.process();
-    
+
     #ifdef LOGGING
     Serial.println("HttpClient>\tEnd of HTTP Request.");
     #endif
@@ -222,12 +222,12 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 Serial.println("\r\nHttpClient>\tError: Response body larger than buffer.");
                 #endif
             }
-            
+
             bufferPosition++;
-            
+
             if (c == 10) {
                 if (strncmp(header, "Content-Length: ", 16) == 0) {
-                    aResponse.length = atoi(&header[17]); 
+                    aResponse.length = atoi(&header[17]);
                 }
                 header = &buffer[bufferPosition];
             }
