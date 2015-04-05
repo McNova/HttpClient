@@ -233,7 +233,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 header = &buffer[bufferPosition];
             }
 
-            if ((&buffer[bufferPosition] - strstr(buffer, "\r\n\r\n")) == aResponse.length)
+            if ((&buffer[bufferPosition] - strstr(buffer, "\r\n\r\n")) - 4 == aResponse.length)
             {
                 buffer[bufferPosition] = '\0';
                 Serial.println(buffer);
