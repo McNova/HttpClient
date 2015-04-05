@@ -241,17 +241,17 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 Serial.println(aResponse.length);
                 if (strlen(aResponse.body) == aResponse.length)
                 {
+                    Serial.println("stop");
                     client.stop();
                 }
             }
             Spark.process();
         }
         buffer[bufferPosition] = '\0'; // Null-terminate buffer
-        aResponse.length = strlen(aResponse.body);
 
         //#ifdef LOGGING
         if (bytes) {
-            Serial.print("\r\nHttpClient>\tEnd of TCP transaction.");
+            Serial.println("\r\nHttpClient>\tEnd of TCP transaction.");
         }
         //#endif
 
@@ -265,7 +265,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         }
         Spark.process();
     } while (client.connected() && !timeout && !error);
-
+    
     #ifdef LOGGING
     if (timeout) {
         Serial.println("\r\nHttpClient>\tError: Timeout while reading response.");
@@ -289,4 +289,5 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         #endif
         return;
     }
+    aResponse.length = strlen(aResponse.body);
 }
