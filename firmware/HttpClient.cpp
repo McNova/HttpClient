@@ -184,14 +184,14 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     char* header;
 
     do {
-        #ifdef LOGGING
+        //#ifdef LOGGING
         int bytes = client.available();
         if(bytes) {
             Serial.print("\r\nHttpClient>\tReceiving TCP transaction of ");
             Serial.print(bytes);
             Serial.println(" bytes.");
         }
-        #endif
+        //#endif
 
         while (client.available()) {
             char c = client.read();
@@ -244,17 +244,16 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                     client.stop();
                 }
             }
-
             Spark.process();
         }
         buffer[bufferPosition] = '\0'; // Null-terminate buffer
         aResponse.length = strlen(aResponse.body);
 
-        #ifdef LOGGING
+        //#ifdef LOGGING
         if (bytes) {
             Serial.print("\r\nHttpClient>\tEnd of TCP transaction.");
         }
-        #endif
+        //#endif
 
         // Check that there hasn't been more than 5s since last read.
         timeout = millis() - lastRead > TIMEOUT;
@@ -281,8 +280,8 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     buffer[12] = 0;
     aResponse.status = atoi(&buffer[9]);
     //#ifdef LOGGING
-    Serial.print("HttpClient>\tStatus Code: ");
     Serial.println(aResponse.status);
+    Serial.println(aResponse.body);
     //#endif
     if (aResponse.body == NULL) {
         #ifdef LOGGING
