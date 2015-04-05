@@ -155,7 +155,6 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         Serial.println(aRequest.body);
         #endif
     }
-    Spark.process();
 
     #ifdef LOGGING
     Serial.println("HttpClient>\tEnd of HTTP Request.");
@@ -199,6 +198,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
             Serial.print(c);
             #endif
             lastRead = millis();
+            Spark.process();
 
             if (c == -1) {
                 error = true;
@@ -245,7 +245,6 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                     client.stop();
                 }
             }
-            Spark.process();
         }
         buffer[bufferPosition] = '\0'; // Null-terminate buffer
 
@@ -255,13 +254,14 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         }
         //#endif
 
-        // Check that there hasn't been more than 5s since last read.
+        // Check that there hasn't been more than 3s since last read.
         timeout = millis() - lastRead > TIMEOUT;
 
         // Unless there has been an error or timeout wait 200ms to allow server
         // to respond or close connection.
         if (!error && !timeout) {
             //delay(200);
+            Serial.print("process");
             Spark.process();
         }
     } while (client.connected() && !timeout && !error);
