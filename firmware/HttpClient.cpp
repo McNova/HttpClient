@@ -237,6 +237,8 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
             if (aResponse.body != NULL)
             {
                 aResponse.body += 4;
+                Serial.println(strlen(aResponse.body));
+                Serial.println(aResponse.length);
                 if (strlen(aResponse.body) == aResponse.length)
                 {
                     client.stop();
@@ -247,7 +249,6 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         }
         buffer[bufferPosition] = '\0'; // Null-terminate buffer
         aResponse.length = strlen(aResponse.body);
-        Serial.println(aResponse.body);
 
         #ifdef LOGGING
         if (bytes) {
