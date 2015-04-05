@@ -192,7 +192,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         }
         //#endif
 
-        while (client.available()) {
+        while (client.available() && !timeout && !error) {
             char c = client.read();
             #ifdef LOGGING
             Serial.print(c);
