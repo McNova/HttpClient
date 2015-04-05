@@ -280,10 +280,10 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     // Not super elegant way of finding the status code, but it works.
     buffer[12] = 0;
     aResponse.status = atoi(&buffer[9]);
-    #ifdef LOGGING
+    //#ifdef LOGGING
     Serial.print("HttpClient>\tStatus Code: ");
     Serial.println(aResponse.status);
-    #endif
+    //#endif
     if (aResponse.body == NULL) {
         #ifdef LOGGING
         Serial.println("HttpClient>\tError: Can't find HTTP response body.");
